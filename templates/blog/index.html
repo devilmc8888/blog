@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block main %}
+    {% if error_msg %}
+        <p>{{ error_msg }}</p>
+    {% endif %}
+    {% for post in post_list %}
+        <article class="post post-{{ post.pk }}">
+            <header class="entry-header">
+                <h1 class="entry-title">
+                    <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+                </h1>
+                <div class="entry-meta">
+                    <span class="post-category"><a href="{% url 'blog:category' post.category.pk %}">{{ post.category.name }}</a></span>
+                    <span class="post-date"><a href="#"><time class="entry-date"
+                                                              datetime="{{ post.created_time }}">{{ post.created_time }}</time></a></span>
+                    <span class="post-author"><a href="#">{{ post.author }}</a></span>
+                    <span class="comments-link">
+                        <a href="{{ post.get_absolute_url }}#comment-area">{{ post.comment_set.count }} 评论</a>
+                    </span>
+                    <span class="views-count"><a href="{{ post.get_absolute_url }}">{{ post.views }} 阅读</a></span>
+                </div>
+            </header>
+            <div class="entry-content clearfix">
+                <p>{{ post.excerpt }}</p>
+                <div class="read-more cl-effect-14">
+                    <a href="{{ post.get_absolute_url }}" class="more-link">点击查看 <span class="meta-nav">→</span></a>
+                </div>
+            </div>
+        </article>
+    {% empty %}
+        <div class="no-post">暂时还没有发布的文章！</div>
+    {% endfor %}
+    <!-- 简单分页效果-->
+    {% if page_totalNum %}
+    <div class="pagination-simple">
+      {% if post_list.has_previous %}
+          <a href="?page={{ post_list.previous_page_number }}">上一页</a>
+      {% endif %}
+      <span class="current">第 {{ post_list.number }} 页 / 共 {{ page_totalNum }} 页</span>
+      {% if post_list.has_next %}
+          <a href="?page={{ post_list.next_page_number }}">下一页</a>
+      {% endif %}
+          <input id="skip" type="text" style="width: 30px">
+          <a onclick="skip()">跳转</a>
+          <script>
+              function skip() {
+                  var num=document.getElementById('skip').value;
+                  location.href="http://127.0.0.1:8000/?page="+num;
+              }
+          </script>
+    </div>
+    {% endif %}
+
+{#    <div class="pagination">#}
+{#        <ul>#}
+{#            <li><a href="">1</a></li>#}
+{#            <li><a href="">...</a></li>#}
+{#            <li><a href="">4</a></li>#}
+{#            <li><a href="">5</a></li>#}
+{#            <li class="current"><a href="">6</a></li>#}
+{#            <li><a href="">7</a></li>#}
+{#            <li><a href="">8</a></li>#}
+{#            <li><a href="">...</a></li>#}
+{#            <li><a href="">11</a></li>#}
+{#        </ul>#}
+{#    </div>#}
+{% endblock main %}
